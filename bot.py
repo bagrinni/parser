@@ -4,6 +4,7 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InputMediaPhoto
 from aiogram.filters import Command
+from aiogram import F
 from aiohttp import web
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
