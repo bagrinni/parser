@@ -22,7 +22,8 @@ dispatcher = Dispatcher()
 # Глобальная переменная для драйвера
 driver = None  # Инициализируем driver как None
 
-# Функции для Selenium
+CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
+
 def create_driver():
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service
@@ -30,12 +31,13 @@ def create_driver():
     from selenium_stealth import stealth
 
     options = Options()
-    options.add_argument('--headless')
+    options.add_argument('--headless')  # Без графического интерфейса
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-gpu')
     options.add_argument('--disable-blink-features=AutomationControlled')
-    service = Service('/usr/local/bin/chromedriver')
+    service = Service(CHROMEDRIVER_PATH)
+    
     driver = webdriver.Chrome(service=service, options=options)
     stealth(driver,
             languages=["en-US", "en"],
