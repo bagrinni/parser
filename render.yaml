@@ -8,4 +8,14 @@ services:
     envVars:
       - key: BOT_TOKEN
         value: "7809115494:AAHSe9imJdXIcnfPV2aAEDa32lxZyw084Ec"
-     dockerfilePath: ./Dockerfile  # Указываем путь к Dockerfile
+    # Включаем дополнительные настройки для установки Chromium и chromedriver
+    buildEnvVars:
+      - key: CHROME_BIN
+        value: "/usr/bin/chromium"
+      - key: CHROMEDRIVER_PATH
+        value: "/usr/local/bin/chromedriver"
+    # Здесь указываем зависимости для установки в контейнере
+    # Будет полезно для установки chromium и chromedriver в облаке
+    installPackages:
+      - chromium
+      - chromium-driver
