@@ -22,7 +22,10 @@ dispatcher = Dispatcher()
 # Глобальная переменная для драйвера
 driver = None  # Инициализируем driver как None
 
-CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
+import os
+
+CHROMEDRIVER_PATH = os.getenv('CHROMEDRIVER_PATH', '/usr/local/bin/chromedriver')
+CHROME_BIN = os.getenv('CHROME_BIN', '/usr/bin/chromium')
 
 def create_driver():
     from selenium import webdriver
@@ -31,7 +34,7 @@ def create_driver():
     from selenium_stealth import stealth
 
     options = Options()
-    options.add_argument('--headless')  # Без графического интерфейса
+    options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-gpu')
@@ -47,6 +50,7 @@ def create_driver():
             renderer="ANGLE (NVIDIA GeForce GTX 1050 Ti Direct3D11 vs_5_0 ps_5_0)",
             fix_hairline=True)
     return driver
+
 
 def get_driver():
     global driver
