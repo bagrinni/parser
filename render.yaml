@@ -8,8 +8,7 @@ services:
     envVars:
       - key: BOT_TOKEN
         value: "7809115494:AAHSe9imJdXIcnfPV2aAEDa32lxZyw084Ec"
+      - key: CHROMEDRIVER_PATH
+        value: "/path/to/parser/drivers/chromedriver"  # Укажите правильный путь
       - key: CHROME_BIN
         value: "/usr/bin/google-chrome-stable"
-      - key: CHROMEDRIVER_PATH
-        value: "/usr/local/bin/chromedriver"
-
