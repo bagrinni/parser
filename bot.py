@@ -10,6 +10,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from aiohttp import web
 
+
+
+import chromedriver_autoinstaller
+
+chromedriver_autoinstaller.install()  # Установит chromedriver, если его нет
+
 # Логирование
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
