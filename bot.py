@@ -25,39 +25,23 @@ def create_driver():
     from selenium.webdriver.chrome.service import Service
     from selenium.webdriver.chrome.options import Options
     from selenium_stealth import stealth
-    import os
 
-    # Опции браузера
     options = Options()
-    options.add_argument('--headless')  # Запуск без графического интерфейса
-    options.add_argument('--no-sandbox')  # Не создавать песочницу (важно для Heroku)
-    options.add_argument('--disable-dev-shm-usage')  # Устранение ограничений на использование общей памяти
-    options.add_argument('--disable-gpu')  # Отключение GPU
-    options.add_argument('--disable-blink-features=AutomationControlled')  # Скрытие автоматики
-    options.add_argument('--disable-infobars')  # Убирает инфо-панель Chrome
-    options.add_argument('--disable-extensions')  # Отключение расширений
-    options.add_argument('--remote-debugging-port=9222')  # Включение отладки
-
-    # Указание пути к ChromeDriver, установленному в среде Heroku
-    chrome_bin_path = os.getenv('GOOGLE_CHROME_BIN', '/usr/bin/google-chrome')
-    chromedriver_path = os.getenv('CHROMEDRIVER_PATH', '/usr/local/bin/chromedriver')
-    options.binary_location = chrome_bin_path
-
-    # Создаем объект драйвера
-    service = Service(chromedriver_path)
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    service = Service('/usr/local/bin/chromedriver')
     driver = webdriver.Chrome(service=service, options=options)
-
-    # Настройка stealth для маскировки Selenium
     stealth(driver,
             languages=["en-US", "en"],
             vendor="Google Inc.",
-            platform="Linux",
+            platform="Win32",
             webgl_vendor="Google Inc.",
-            renderer="ANGLE (Google, Vulkan 1.2.155)",
+            renderer="ANGLE (NVIDIA GeForce GTX 1050 Ti Direct3D11 vs_5_0 ps_5_0)",
             fix_hairline=True)
-
     return driver
-
 
 def get_driver():
     global driver
