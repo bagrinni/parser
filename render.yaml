@@ -8,3 +8,4 @@ services:
     envVars:
       - key: BOT_TOKEN
         value: "7809115494:AAHSe9imJdXIcnfPV2aAEDa32lxZyw084Ec"
+     dockerfilePath: ./Dockerfile  # Указываем путь к Dockerfile
