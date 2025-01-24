@@ -129,11 +129,11 @@ async def close_driver_message(message: types.Message):
     close_driver()
     await message.reply("Драйвер закрыт. Бот остановлен.")
 
-# Запуск бота
 async def main():
     logging.info("Бот запущен")
     await dispatcher.start_polling(bot)
 
 if __name__ == '__main__':
-    # Убираем asyncio.run() и просто вызываем main() с await
-    asyncio.get_event_loop().run_until_complete(main())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+
