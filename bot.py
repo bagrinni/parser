@@ -12,9 +12,6 @@ from aiohttp import web
 
 
 
-import chromedriver_autoinstaller
-
-chromedriver_autoinstaller.install()  # Установит chromedriver, если его нет
 
 # Логирование
 logging.basicConfig(level=logging.INFO)
