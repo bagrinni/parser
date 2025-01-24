@@ -159,5 +159,12 @@ async def main():
     logging.info("Бот запущен")
     await dispatcher.start_polling(bot)
 
+import os
+
+async def main():
+    port = os.getenv('PORT', 8080)  # Указываем порт, который Render ожидает
+    logging.info(f"Бот запущен на порту {port}")
+    await dispatcher.start_polling(bot)
+
 if __name__ == '__main__':
     asyncio.run(main())
