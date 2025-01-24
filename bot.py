@@ -103,13 +103,16 @@ def parse_wildberries(url):
 async def start_message(message: types.Message):
     await message.reply("Привет! Отправь мне ссылку на товар с Wildberries, и я пришлю изображения.")
 
+async def parse_wildberries_async(url):
+    return await asyncio.to_thread(parse_wildberries, url)
+
 @dispatcher.message(F.text.startswith('http'))
 async def handle_link(message: types.Message):
     logger.info(f"Получен запрос от пользователя {message.from_user.id} с URL: {message.text}")
     url = message.text.strip()
     await message.reply("Начинаю парсинг... Подождите.")
     try:
-        result = parse_wildberries(url)
+        result = await parse_wildberries_async(url)
         if 'error' in result:
             await message.reply(f"Ошибка: {result['error']}")
         else:
