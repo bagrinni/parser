@@ -12,13 +12,4 @@ services:
         value: "/usr/bin/google-chrome-stable"
       - key: CHROMEDRIVER_PATH
         value: "/usr/local/bin/chromedriver"
-    buildEnvVars:
-      - key: PIP_NO_CACHE_DIR
-        value: "false"
-      - key: PIP_DISABLE_PIP_VERSION_CHECK
-        value: "true"
-      - key: INSTALL_CHROMIUM
-        value: "true"
-    installPackages:
-      - chromium
-      - chromium-driver
+
