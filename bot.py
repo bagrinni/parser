@@ -1,12 +1,14 @@
 import logging
+import os
+import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InputMediaPhoto
 from aiogram.filters import Command
-from aiogram import F
-import asyncio
+from aiohttp import web
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+import time
 
 # Логирование
 logging.basicConfig(level=logging.INFO)
@@ -14,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 # Токен вашего бота
 BOT_TOKEN = '7809115494:AAHSe9imJdXIcnfPV2aAEDa32lxZyw084Ec'
-bot = Bot(token=BOT_TOKEN, timeout="10")
+bot = Bot(token=BOT_TOKEN, timeout=10)
 dispatcher = Dispatcher()
 
 # Глобальная переменная для драйвера
@@ -55,50 +57,41 @@ def close_driver():
         driver.quit()
         driver = None
 
-import time
-
 def parse_wildberries(url):
     driver = get_driver()
     try:
         driver.get(url)
 
-        # Увеличиваем время ожидания и используем ожидания для конкретных элементов
         WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '.product-gallery'))
         )
 
-        # Прокручиваем страницу вниз для подгрузки изображений
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(3)  # Даем время на подгрузку новых изображений
+        time.sleep(3)
 
-        # После прокрутки ждем загрузки слайдов
         WebDriverWait(driver, 20).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.swiper-slide'))
         )
 
-        images = set()  # Используем множество для уникальных изображений
+        images = set()
         swiper_slides = driver.find_elements(By.CSS_SELECTOR, '.swiper-slide')
 
-        # Ограничиваем количество слайдов, чтобы избежать бесконечного парсинга
         max_slides = 50
         count = 0
 
         for slide in swiper_slides:
-            if count >= max_slides:  # Прекращаем, если количество слайдов больше 50
+            if count >= max_slides:
                 break
 
             try:
-                # Получаем атрибут data-ind для каждого слайда
                 data_ind = slide.get_attribute('data-ind')
-
-                # Ищем изображения внутри слайда с классом swiper-slide__img
                 img_elements = slide.find_elements(By.CSS_SELECTOR, 'img.swiper-slide__img')
 
                 for img_element in img_elements:
                     img_src = img_element.get_attribute('src')
 
                     if img_src and img_src not in images:
-                        images.add(img_src)  # Добавляем в множество для уникальности
+                        images.add(img_src)
                         logger.info(f"Найдено изображение с data-ind={data_ind}: {img_src}")
                     elif img_src:
                         logger.info(f"Изображение с data-ind={data_ind} уже добавлено: {img_src}")
@@ -112,14 +105,11 @@ def parse_wildberries(url):
         if not images:
             logger.error("Не удалось найти изображения на странице.")
 
-        return {'images': list(images)}  # Преобразуем множество обратно в список
+        return {'images': list(images)}
 
     except Exception as e:
         logger.error(f"Ошибка при парсинге Wildberries: {e}")
         return {'error': f"Ошибка при парсинге Wildberries: {e}"}
-
-
-
 
 @dispatcher.message(Command('start'))
 async def start_message(message: types.Message):
@@ -139,7 +129,6 @@ async def handle_link(message: types.Message):
             if images:
                 await message.reply(f"Найдено {len(images)} изображений. Отправляю...")
 
-                # Передаем ссылки на изображения
                 media_group = [InputMediaPhoto(media=img) for img in images[:10]]  # Ограничение на 10 изображений
                 await message.answer_media_group(media=media_group)
             else:
@@ -148,16 +137,34 @@ async def handle_link(message: types.Message):
         logger.error(f"Ошибка при обработке запроса от пользователя {message.from_user.id}: {str(e)}")
         await message.reply(f"Произошла ошибка: {str(e)}")
 
-
-
 @dispatcher.message(Command('close'))
 async def close_driver_message(message: types.Message):
     close_driver()
     await message.reply("Драйвер закрыт. Бот остановлен.")
 
+async def on_start(request):
+    update = types.Update(**await request.json())
+    await dispatcher.process_update(update)
+    return web.Response()
+
+async def on_shutdown(request):
+    close_driver()
+    return web.Response()
+
+async def set_webhook():
+    url = f"https://parser-yxqp.onrender.com/webhook"  # Ваш URL Render
+    await bot.set_webhook(url)
+
 async def main():
-    logging.info("Бот запущен")
-    await dispatcher.start_polling(bot)
+    await set_webhook()
+
+    app = web.Application()
+    app.router.add_get('/webhook', on_start)
+    app.router.add_post('/webhook', on_start)
+
+    port = os.getenv('PORT', 8080)
+    logging.info(f"Бот запущен на порту {port}")
+    web.run_app(app, port=port)
 
 if __name__ == '__main__':
     asyncio.run(main())
