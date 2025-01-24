@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: parser-bot
+    name: parser
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
