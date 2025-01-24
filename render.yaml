@@ -1,21 +1,24 @@
 services:
   - type: web
-    name: parser
+    name: parser-bot
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python bot.py"
     envVars:
       - key: BOT_TOKEN
-        value: "7809115494:AAHSe9imJdXIcnfPV2aAEDa32lxZyw084Ec"
-    # Включаем дополнительные настройки для установки Chromium и chromedriver
-    buildEnvVars:
+        value: "7809115494:AAHSe91mJdXICnfPV2aAEDaЗ21xZyw084EC"
       - key: CHROME_BIN
-        value: "/usr/bin/chromium"
+        value: "/usr/bin/google-chrome-stable"
       - key: CHROMEDRIVER_PATH
         value: "/usr/local/bin/chromedriver"
-    # Здесь указываем зависимости для установки в контейнере
-    # Будет полезно для установки chromium и chromedriver в облаке
+    buildEnvVars:
+      - key: PIP_NO_CACHE_DIR
+        value: "false"
+      - key: PIP_DISABLE_PIP_VERSION_CHECK
+        value: "true"
+      - key: INSTALL_CHROMIUM
+        value: "true"
     installPackages:
       - chromium
       - chromium-driver
