@@ -7,7 +7,7 @@ services:
     startCommand: "python bot.py"
     envVars:
       - key: BOT_TOKEN
-        value: "7809115494:AAHSe91mJdXICnfPV2aAEDaЗ21xZyw084EC"
+        value: "7809115494:AAHSe9imJdXIcnfPV2aAEDa32lxZyw084Ec"
       - key: CHROME_BIN
         value: "/usr/bin/google-chrome-stable"
       - key: CHROMEDRIVER_PATH
